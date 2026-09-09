@@ -1,0 +1,37 @@
+name: Build CV
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: texlive/texlive:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build CV
+        run: make cv
+
+      # Second pass so cross-references and PDF outlines are up to date
+      - name: Build CV (second pass)
+        run: make cv
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv
+          path: dist/cv.pdf
+          if-no-files-found: error
+
+      - name: Attach PDF to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/cv.pdf
