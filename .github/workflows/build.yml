@@ -11,7 +11,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: texlive/texlive:latest
+      # Pinned: awesome-cv's vertical spacing renders incorrectly (overlapping
+      # entry headings) on TeX Live 2024+; TL2023 is the verified-good version.
+      image: texlive/texlive:TL2023-historic
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -32,6 +34,6 @@ jobs:
 
       - name: Attach PDF to release
         if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: dist/cv.pdf
