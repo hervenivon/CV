@@ -4,8 +4,10 @@
 %   package). Kept in its own file so the summary text stays easy to edit.
 %-------------------------------------------------------------------------------
 %---------------------------------------------------------
-\begin{cventries}
-    {
+% Centered without the list spacing that \begin{cventries} (a center
+% environment) adds above and below the picture; that spacing cost about a
+% centimetre of page 1.
+\begingroup\centering
         % This section depends on chronology package
         % Documentation is here:
         % - http://ctan.localhost.net.ar/macros/latex/contrib/chronology/chronology.pdf
@@ -44,45 +46,59 @@
         %   \event{\decimaldate{25}{12}{2001}}{three}
         % \end{chronology}
 
-        % \begin{chronology}[3]{2007}{2021}{0.85\textwidth}[\textwidth]
-        % Do not start at the true beginning of the experience, not enough space on the chart
-        \begin{chronology}[3]{2011}{2027}{0.85\textwidth}[\textwidth]
+        % Two neighbouring events less than ~5 months apart cannot both carry a
+        % 45-degree label without overlapping, so such a pair shares one label
+        % placed midway between the two dots. A two-line label (\\) is possible
+        % when the previous event is more than a year away, since the extra line
+        % stacks towards it.
+        % Usage: \pairlabel{date1}{date2}{label}
+        \newcommand{\pairlabel}[3]{%
+            \pgfmathsetlength\xstart{((#1+#2)/2-\theyearstart)*\unit}%
+            \node[eventlabel,align=left] at (\xstart,0) {#3};%
+        }
+        \newcommand{\sep}{{\,\textperiodcentered\,}}
+
+        % Do not start at the true beginning of the experience, not enough space on the chart.
+        % Tick labels: chronology v2.0 labels the years divisible by the step, so a
+        % step of 2 yields 2012 ... 2026 (a step of 3 would stop at 2025).
+        \begin{chronology}[2]{2011}{2026}{0.85\textwidth}[\textwidth]
             % Accenture milestones
             \event{\decimaldate{13}{7}{2011}}{\descriptionstyle{EMEA Open Utilities Market}}
-            \event{\decimaldate{1}{5}{2012}}{\descriptionstyle{Strategic Utilies Project Design}} % Box Engie
-            \event{\decimaldate{1}{9}{2013}}{\descriptionstyle{Indian Delivery Center Deployment}}
-            \event{\decimaldate{1}{5}{2014}}{\descriptionstyle{Innovation Contest 1st Place}}
-            \event{\decimaldate{1}{12}{2014}}{\descriptionstyle{Drone data processing PoC}}
-            \event{\decimaldate{15}{6}{2015}}{\descriptionstyle{20000+ man.days delivered}}
-            \event{\decimaldate{1}{9}{2015}}{\descriptionstyle{Innovation lead}}
-
+            \event{\decimaldate{1}{5}{2012}}{\descriptionstyle{Strategic Utilities Project}} % Engie
+            \event{\decimaldate{1}{9}{2013}}{}
             \tikzset{chronevent/.style={fill=redbird,draw=none,opacity=0.5}}
-            \event{\decimaldate{1}{12}{2013}}{\descriptionstyle{Meet Redbird}}
+            \event{\decimaldate{1}{12}{2013}}{}
             \tikzset{chronevent/.style={fill=black,draw=none,opacity=0.5}}
+            \pairlabel{\decimaldate{1}{9}{2013}}{\decimaldate{1}{12}{2013}}{\descriptionstyle{Indian Delivery Center}\\\descriptionstyle{Meet Redbird}}
+            \event{\decimaldate{1}{5}{2014}}{\descriptionstyle{Innovation Contest Winner}}
+            \event{\decimaldate{1}{12}{2014}}{\descriptionstyle{Drone Data Processing PoC}}
+            \event{\decimaldate{15}{6}{2015}}{\descriptionstyle{20,000+ Man-Days Delivered}}
 
             % Redbird milestones
             \tikzset{chronevent/.style={fill=redbird,draw=none,opacity=0.7}}
-            \event{\decimaldate{1}{11}{2016}}{\descriptionstyle{Becoming a global company}}
-            \event{\decimaldate{1}{5}{2017}}{\descriptionstyle{Breathtaking Deep Learning Results}}
-            \event{\decimaldate{31}{12}{2017}}{\descriptionstyle{SOTA Model on Aerial Imagery}}
-            \event{\decimaldate{1}{10}{2018}}{\descriptionstyle{2nd Company Sell}}
+            \event{\decimaldate{1}{11}{2016}}{\descriptionstyle{Becoming a Global Company}}
+            \event{\decimaldate{1}{5}{2017}}{\descriptionstyle{Deep Learning Breakthrough}}
+            \event{\decimaldate{31}{12}{2017}}{\descriptionstyle{SOTA Aerial Imagery Model}}
+            \event{\decimaldate{1}{10}{2018}}{\descriptionstyle{2nd Company Sale}}
             \tikzset{chronevent/.style={fill=black,draw=none,opacity=0.5}}
 
             % AWS milestones
             \tikzset{chronevent/.style={fill=aws,draw=none,opacity=0.7}}
             \event{\decimaldate{1}{4}{2020}}{\descriptionstyle{1st EMEA Activate Onboarding}}
-            \event{\decimaldate{30}{9}{2020}}{\descriptionstyle{Major Partnership signed}}
-            \event{\decimaldate{1}{4}{2021}}{\descriptionstyle{Dozen public speaking}}
-            \event{\decimaldate{2}{7}{2021}}{\descriptionstyle{400+ Startups engaged in 1:1}}
+            \event{\decimaldate{30}{9}{2020}}{\descriptionstyle{Major Partnership Signed}}
+            \event{\decimaldate{1}{4}{2021}}{}
+            \event{\decimaldate{2}{7}{2021}}{}
+            \pairlabel{\decimaldate{1}{4}{2021}}{\decimaldate{2}{7}{2021}}{\descriptionstyle{Dozen Talks\sep 400+ Startups}}
             \tikzset{chronevent/.style={fill=black,draw=none,opacity=0.5}}
 
             % Scenario milestones
             \tikzset{chronevent/.style={fill=scenario,draw=none,opacity=0.7}}
-            \event{\decimaldate{1}{12}{2022}}{\descriptionstyle{Beta Launch}}
-            \event{\decimaldate{9}{4}{2023}}{\descriptionstyle{5M Images Generated}}
+            \event{\decimaldate{1}{12}{2022}}{}
+            \event{\decimaldate{9}{4}{2023}}{}
+            \pairlabel{\decimaldate{1}{12}{2022}}{\decimaldate{9}{4}{2023}}{\descriptionstyle{Beta Launch\sep 5M Images}}
             \event{\decimaldate{1}{2}{2024}}{\descriptionstyle{100K Custom Models}}
-            \event{\decimaldate{1}{6}{2025}}{\descriptionstyle{15K+ Customers}} % TODO: confirm milestone date
-            \event{\decimaldate{1}{6}{2026}}{\descriptionstyle{1,000+ Models}} % TODO: confirm milestone date
+            \event{\decimaldate{1}{6}{2025}}{\descriptionstyle{15K+ Customers}}
+            \event{\decimaldate{1}{6}{2026}}{\descriptionstyle{1,000+ Models}}
             \tikzset{chronevent/.style={fill=black,draw=none,opacity=0.5}}
 
             % Co.Factory & angel investing milestones
@@ -93,12 +109,14 @@
 
             %Periods
             %Set periods under the timeline
-            \tikzset{eventlabel/.style={chroneventlabel,anchor=south,yshift=-0.85\unit,rotate=0}}
+            % text depth=0pt gives every period label the same baseline; otherwise a
+            % descender (the g of Manager) lifts that label towards the year above it.
+            \tikzset{eventlabel/.style={chroneventlabel,anchor=south,text depth=0pt,yshift=-0.9\unit,rotate=0}}
             %Set a light default for periods
             \tikzset{chronevent/.style={fill=black,draw=none,opacity=0.2}}
 
             \event[\decimaldate{1}{1}{2011}]{\decimaldate{31}{8}{2012}}{\descriptionstyle{Consultant}}
-            \event[\decimaldate{31}{8}{2012}]{\decimaldate{8}{1}{2016}}{\descriptionstyle{Manager}}
+            \event[\decimaldate{31}{8}{2012}]{\decimaldate{8}{1}{2016}}{\descriptionstyle{Manager\sep Innovation Lead}}
 
             \tikzset{chronevent/.style={fill=redbird,draw=none,opacity=0.2}}
             \event[\decimaldate{16}{1}{2016}]{\decimaldate{26}{5}{2019}}{\descriptionstyle{Redbird/Airware/Delair}}
@@ -112,6 +130,4 @@
             \event[\decimaldate{2}{7}{2021}]{\decimaldate{9}{9}{2026}}{\descriptionstyle{Scenario}}
             \tikzset{chronevent/.style={fill=black,draw=none,opacity=0.5}}
         \end{chronology}
-        \vspace{0.10cm}
-    }
-\end{cventries}
+\par\endgroup
