@@ -1,0 +1,39 @@
+name: Build CV
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      # Pinned: awesome-cv's vertical spacing renders incorrectly (overlapping
+      # entry headings) on TeX Live 2024+; TL2023 is the verified-good version.
+      image: texlive/texlive:TL2023-historic
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build CV
+        run: make cv
+
+      # Second pass so cross-references and PDF outlines are up to date
+      - name: Build CV (second pass)
+        run: make cv
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: cv
+          path: dist/cv.pdf
+          if-no-files-found: error
+
+      - name: Attach PDF to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v3
+        with:
+          files: dist/cv.pdf
